@@ -33,4 +33,21 @@ if __name__ == '__main__':
 
         # All data in now loaded to the Data folder.
 
+    office_A = pd.read_xml('../Data/A_office_data.xml')
+    office_B = pd.read_xml('../Data/B_office_data.xml')
+    hr_data = pd.read_xml('../Data/hr_data.xml')
+
+    office_A = office_A.astype({'employee_office_id': str})
+    office_A['employee_office_id'] = 'A' + office_A['employee_office_id']
+    office_A.set_index('employee_office_id', inplace=True)
+
+    office_B = office_B.astype({'employee_office_id': str})
+    office_B['employee_office_id'] = 'B' + office_B['employee_office_id']
+    office_B.set_index('employee_office_id', inplace=True)
+
+    hr_data.set_index('employee_id', inplace=True)
+
+    print(office_A.index.tolist())
+    print(office_B.index.tolist())
+    print(hr_data.index.tolist())
     # write your code here
