@@ -59,15 +59,23 @@ if __name__ == '__main__':
         print('Loaded.')
 
         # All data in now loaded to the Data folder.
-
+    #reindexing
     office_A, office_B, hr_data = loading_and_reindexing()
 
+    #merging data
     concated_AB = concat_datasets(office_A, office_B)
     merged_AB_HR = merge_data(concated_AB, hr_data)
     merged_AB_HR.drop(columns='_merge', inplace=True)
     merged_AB_HR.sort_index(inplace=True)
 
-    print(list(merged_AB_HR.index))
-    print(list(merged_AB_HR.columns))
+    #getting data
+    top_ten_departments = merged_AB_HR.sort_values('average_monthly_hours', ascending=False).iloc[:10, 5].to_list()
+    low_salaries_projects = merged_AB_HR.query("Department == 'IT' & salary == 'low'")['number_project'].sum()
+    list_of_workers = ['A4', 'B7064','A3033']
+    last_evaluation_score = merged_AB_HR.loc[list_of_workers][['last_evaluation', 'satisfaction_level']].values.tolist()
+    #print(merged_AB_HR.info())
+    print(top_ten_departments)
+    print(low_salaries_projects)
+    print(last_evaluation_score)
 
     # write your code here
