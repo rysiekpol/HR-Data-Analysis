@@ -30,7 +30,6 @@ def loading_and_reindexing():
 def merge_data(AB, HR):
     return AB.merge(HR, indicator=True, left_index=True, right_index=True)
 
-
 if __name__ == '__main__':
 
     if not os.path.exists('../Data'):
@@ -73,9 +72,18 @@ if __name__ == '__main__':
     low_salaries_projects = merged_AB_HR.query("Department == 'IT' & salary == 'low'")['number_project'].sum()
     list_of_workers = ['A4', 'B7064','A3033']
     last_evaluation_score = merged_AB_HR.loc[list_of_workers][['last_evaluation', 'satisfaction_level']].values.tolist()
-    #print(merged_AB_HR.info())
-    print(top_ten_departments)
-    print(low_salaries_projects)
-    print(last_evaluation_score)
+    print(merged_AB_HR.info())
+
+    #aggregating data
+    count_bigger_five = lambda df: sum(df>5)
+    count_bigger_five.__name__ = 'count_bigger_5'
+    result = merged_AB_HR.groupby('left').agg({
+        'Work_accident': 'mean',
+        'number_project': ['median', count_bigger_five],
+        'time_spend_company': ['mean', 'median'],
+        'last_evaluation': ['mean', 'std']
+    }).round(2).to_dict()
+
+    print(result)
 
     # write your code here
