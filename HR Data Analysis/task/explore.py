@@ -72,7 +72,6 @@ if __name__ == '__main__':
     low_salaries_projects = merged_AB_HR.query("Department == 'IT' & salary == 'low'")['number_project'].sum()
     list_of_workers = ['A4', 'B7064','A3033']
     last_evaluation_score = merged_AB_HR.loc[list_of_workers][['last_evaluation', 'satisfaction_level']].values.tolist()
-    print(merged_AB_HR.info())
 
     #aggregating data
     count_bigger_five = lambda df: sum(df>5)
@@ -84,6 +83,14 @@ if __name__ == '__main__':
         'last_evaluation': ['mean', 'std']
     }).round(2).to_dict()
 
-    print(result)
+    #pivot dataframes
+    answer_1 = merged_AB_HR.pivot_table(index='Department', columns=['left','salary'], values='average_monthly_hours', aggfunc='median')
+    answer_1 = answer_1[(answer_1[(0,'high')] < answer_1[(0,'medium')])
+                   | (answer_1[(1,'low')] < answer_1[(1,'high')])]
+    answer_2 = merged_AB_HR.pivot_table(index='time_spend_company', columns='promotion_last_5years', values=['satisfaction_level','last_evaluation'], aggfunc=['max', 'mean', 'min'])
+    answer_2 = answer_2[answer_2[('mean', 'last_evaluation', 0)] > answer_2[('mean', 'last_evaluation', 1)]]
+    print(answer_1.to_dict())
+    print(answer_2.to_dict())
+
 
     # write your code here
